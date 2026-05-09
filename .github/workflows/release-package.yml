@@ -53,8 +53,11 @@ jobs:
           out = Path(f"{package_name}.zip")
           with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as zf:
               for path in sorted(root.rglob("*")):
+                  rel = path.relative_to(root)
+                  if ("__pycache__" in rel.parts or path.suffix in {".pyc", ".pyo"}):
+                      continue
                   if path.is_file():
-                      zf.write(path, Path(package_name) / path.relative_to(root))
+                      zf.write(path, Path(package_name) / rel)
           print(out)
           PY
 
