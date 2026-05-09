@@ -1,0 +1,96 @@
+{
+  "schema_version": "1.0",
+  "name": "com_menu",
+  "type": "component",
+  "vendor": "klucon",
+  "extension_id": "klucon/com_menu",
+  "version": "0.1.0",
+  "display_name": "Menu",
+  "display_name_key": "extensions.name.com_menu",
+  "description": "Sprava menu a navigacnich polozek pro frontend sablony.",
+  "license": "MIT",
+  "author": {
+    "name": "KLUCON",
+    "url": "https://klucon.cz"
+  },
+  "links": {
+    "homepage": "https://marketplace.klucon.cz",
+    "repository": "https://github.com/klucon/com_menu"
+  },
+  "compatibility": {
+    "core_min": "0.1.0",
+    "core_max": null,
+    "python": ">=3.12",
+    "database": [
+      "mysql",
+      "postgresql"
+    ]
+  },
+  "package": {
+    "python_package": "com_menu",
+    "entrypoint": "src.components.com_menu",
+    "setup_function": "setup",
+    "admin_router": "admin.router",
+    "web_views": []
+  },
+  "permissions": [
+    {
+      "key": "menu.view",
+      "label": "permissions.menu.view"
+    },
+    {
+      "key": "menu.manage",
+      "label": "permissions.menu.manage"
+    }
+  ],
+  "i18n": {
+    "domain": "com_menu",
+    "locales_path": "i18n",
+    "required_locales": [
+      "cs_CZ",
+      "en_GB"
+    ]
+  },
+  "migrations": {
+    "enabled": false,
+    "path": "migrations"
+  },
+  "security": {
+    "requires_signature": true,
+    "capabilities": [
+      "database.write",
+      "admin.routes"
+    ]
+  },
+  "marketplace": {
+    "category": "navigation",
+    "tags": [
+      "menu",
+      "navigation",
+      "frontend"
+    ],
+    "featured": false
+  },
+  "min_cms_version": "0.1.0",
+  "categories": [
+    "navigation"
+  ],
+  "supported_locales": [
+    "cs_CZ",
+    "en_GB"
+  ],
+  "changelog": "Initial scaffold.",
+  "routes": {
+    "admin": {
+      "enabled": true,
+      "prefix": "/admin/com_menu",
+      "nav_label": "extensions.name.com_menu",
+      "nav_icon": "list",
+      "nav_order": 140
+    },
+    "web": {
+      "enabled": false
+    }
+  },
+  "admin_url": "/admin/com_menu"
+}

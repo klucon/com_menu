@@ -1,0 +1,6 @@
+{
+  "extensions.name.com_menu": "Menu",
+  "extensions.description.com_menu": "Menu and navigation item management for frontend themes.",
+  "permissions.menu.view": "menu.view",
+  "permissions.menu.manage": "menu.manage"
+}

@@ -1,0 +1,6 @@
+{
+  "extensions.name.com_menu": "Menu",
+  "extensions.description.com_menu": "Sprava menu a navigacnich polozek pro frontend sablony.",
+  "permissions.menu.view": "menu.view",
+  "permissions.menu.manage": "menu.manage"
+}
