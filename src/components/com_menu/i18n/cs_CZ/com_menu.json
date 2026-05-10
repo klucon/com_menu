@@ -19,6 +19,7 @@
   "com_menu.admin.col.target": "Cíl",
   "com_menu.admin.col.status": "Stav",
   "com_menu.admin.col.ordering": "Řazení",
+  "com_menu.admin.col.actions": "Akce",
   "com_menu.status.published": "Publikováno",
   "com_menu.status.unpublished": "Nepublikováno",
   "com_menu.target.self": "Stejné okno",

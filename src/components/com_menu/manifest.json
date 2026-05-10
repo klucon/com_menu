@@ -4,7 +4,7 @@
   "type": "component",
   "vendor": "klucon",
   "extension_id": "klucon/com_menu",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "display_name": "Menu",
   "display_name_key": "extensions.name.com_menu",
   "description": "Správa menu a navigačních položek pro frontend šablony.",

@@ -4,7 +4,7 @@
 {% block heading %}{% if menu %}{{ ct('com_menu.admin.edit_menu') }}: {{ menu.title }}{% else %}{{ ct('com_menu.admin.new_menu') }}{% endif %}{% endblock %}
 
 {% block toolbar %}
-<div class="cms-toolbar" role="toolbar">
+<div class="cms-toolbar" role="toolbar" aria-label="{% if menu %}{{ ct('com_menu.admin.edit_menu') }}{% else %}{{ ct('com_menu.admin.new_menu') }}{% endif %}">
   {{ btn_save(t, 'cms-menu-form') }}
   {{ separator() }}
   {{ btn_cancel(t, '/admin/com_menu') }}
@@ -13,22 +13,25 @@
 
 {% block content %}
 {% if flash %}
-<div class="alert alert-{{ flash.type }} alert-dismissible mb-4" role="alert">{{ flash.text }}</div>
+<div class="alert alert-{{ flash.type }} alert-dismissible mb-4" role="alert">
+  {{ flash.text }}
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ t('alert.close') }}"></button>
+</div>
 {% endif %}
 <form id="cms-menu-form" method="post" action="{% if menu %}/admin/com_menu/menus/{{ menu.id }}/edit{% else %}/admin/com_menu/menus/new{% endif %}">
   <div class="card">
     <div class="card-body">
       <div class="mb-3">
-        <label class="form-label fw-medium">{{ ct('com_menu.admin.col.title') }}</label>
-        <input class="form-control" name="title" value="{{ menu.title if menu else '' }}" required>
+        <label for="menu-title" class="form-label fw-medium">{{ ct('com_menu.admin.col.title') }}</label>
+        <input id="menu-title" class="form-control" name="title" value="{{ menu.title if menu else '' }}" required>
       </div>
       <div class="mb-3">
-        <label class="form-label fw-medium">{{ ct('com_menu.admin.col.alias') }}</label>
-        <input class="form-control font-monospace" name="alias" value="{{ menu.alias if menu else '' }}">
+        <label for="menu-alias" class="form-label fw-medium">{{ ct('com_menu.admin.col.alias') }}</label>
+        <input id="menu-alias" class="form-control font-monospace" name="alias" value="{{ menu.alias if menu else '' }}">
       </div>
       <div>
-        <label class="form-label fw-medium">{{ ct('com_menu.admin.col.description') }}</label>
-        <textarea class="form-control" name="description" rows="5">{{ menu.description if menu else '' }}</textarea>
+        <label for="menu-description" class="form-label fw-medium">{{ ct('com_menu.admin.col.description') }}</label>
+        <textarea id="menu-description" class="form-control" name="description" rows="5">{{ menu.description if menu else '' }}</textarea>
       </div>
     </div>
   </div>

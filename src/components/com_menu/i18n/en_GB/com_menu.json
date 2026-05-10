@@ -19,6 +19,7 @@
   "com_menu.admin.col.target": "Target",
   "com_menu.admin.col.status": "Status",
   "com_menu.admin.col.ordering": "Ordering",
+  "com_menu.admin.col.actions": "Actions",
   "com_menu.status.published": "Published",
   "com_menu.status.unpublished": "Unpublished",
   "com_menu.target.self": "Same window",

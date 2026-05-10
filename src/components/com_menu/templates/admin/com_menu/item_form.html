@@ -4,7 +4,7 @@
 {% block heading %}{% if item %}{{ ct('com_menu.admin.edit_item') }}: {{ item.title }}{% else %}{{ ct('com_menu.admin.new_item') }}{% endif %}{% endblock %}
 
 {% block toolbar %}
-<div class="cms-toolbar" role="toolbar">
+<div class="cms-toolbar" role="toolbar" aria-label="{% if item %}{{ ct('com_menu.admin.edit_item') }}{% else %}{{ ct('com_menu.admin.new_item') }}{% endif %}">
   {{ btn_save(t, 'cms-menu-item-form') }}
   {{ separator() }}
   {{ btn_cancel(t, '/admin/com_menu') }}
@@ -13,7 +13,10 @@
 
 {% block content %}
 {% if flash %}
-<div class="alert alert-{{ flash.type }} alert-dismissible mb-4" role="alert">{{ flash.text }}</div>
+<div class="alert alert-{{ flash.type }} alert-dismissible mb-4" role="alert">
+  {{ flash.text }}
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ t('alert.close') }}"></button>
+</div>
 {% endif %}
 <form id="cms-menu-item-form" method="post" action="{% if item %}/admin/com_menu/items/{{ item.id }}/edit{% else %}/admin/com_menu/items/new{% endif %}">
   <div class="row">
@@ -21,12 +24,12 @@
       <div class="card">
         <div class="card-body">
           <div class="mb-3">
-            <label class="form-label fw-medium">{{ ct('com_menu.admin.col.title') }}</label>
-            <input class="form-control" name="title" value="{{ item.title if item else '' }}" required>
+            <label for="menu-item-title" class="form-label fw-medium">{{ ct('com_menu.admin.col.title') }}</label>
+            <input id="menu-item-title" class="form-control" name="title" value="{{ item.title if item else '' }}" required>
           </div>
           <div>
-            <label class="form-label fw-medium">{{ ct('com_menu.admin.col.url') }}</label>
-            <input class="form-control font-monospace" name="url" value="{{ item.url if item else '/' }}" required>
+            <label for="menu-item-url" class="form-label fw-medium">{{ ct('com_menu.admin.col.url') }}</label>
+            <input id="menu-item-url" class="form-control font-monospace" name="url" value="{{ item.url if item else '/' }}" required>
           </div>
         </div>
       </div>
@@ -35,30 +38,30 @@
       <div class="card">
         <div class="card-body">
           <div class="mb-3">
-            <label class="form-label fw-medium">{{ ct('com_menu.admin.menus') }}</label>
-            <select class="form-select" name="menu_id" required>
+            <label for="menu-item-menu" class="form-label fw-medium">{{ ct('com_menu.admin.menus') }}</label>
+            <select id="menu-item-menu" class="form-select" name="menu_id" required>
               {% for menu in menus %}
               <option value="{{ menu.id }}" {% if item and item.menu_id == menu.id %}selected{% endif %}>{{ menu.title }}</option>
               {% endfor %}
             </select>
           </div>
           <div class="mb-3">
-            <label class="form-label fw-medium">{{ ct('com_menu.admin.col.target') }}</label>
-            <select class="form-select" name="target">
+            <label for="menu-item-target" class="form-label fw-medium">{{ ct('com_menu.admin.col.target') }}</label>
+            <select id="menu-item-target" class="form-select" name="target">
               <option value="_self" {% if not item or item.target == '_self' %}selected{% endif %}>{{ ct('com_menu.target.self') }}</option>
               <option value="_blank" {% if item and item.target == '_blank' %}selected{% endif %}>{{ ct('com_menu.target.blank') }}</option>
             </select>
           </div>
           <div class="mb-3">
-            <label class="form-label fw-medium">{{ ct('com_menu.admin.col.status') }}</label>
-            <select class="form-select" name="status">
+            <label for="menu-item-status" class="form-label fw-medium">{{ ct('com_menu.admin.col.status') }}</label>
+            <select id="menu-item-status" class="form-select" name="status">
               <option value="published" {% if not item or item.status == 'published' %}selected{% endif %}>{{ ct('com_menu.status.published') }}</option>
               <option value="unpublished" {% if item and item.status == 'unpublished' %}selected{% endif %}>{{ ct('com_menu.status.unpublished') }}</option>
             </select>
           </div>
           <div>
-            <label class="form-label fw-medium">{{ ct('com_menu.admin.col.ordering') }}</label>
-            <input class="form-control" type="number" name="ordering" value="{{ item.ordering if item else 0 }}">
+            <label for="menu-item-ordering" class="form-label fw-medium">{{ ct('com_menu.admin.col.ordering') }}</label>
+            <input id="menu-item-ordering" class="form-control" type="number" name="ordering" value="{{ item.ordering if item else 0 }}">
           </div>
         </div>
       </div>

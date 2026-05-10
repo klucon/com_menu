@@ -10,7 +10,7 @@
 </div>
 {% endif %}
 
-<div class="d-flex gap-2 mb-3">
+<div class="d-flex gap-2 mb-3" role="toolbar" aria-label="{{ ct('com_menu.admin.heading') }}">
   <a class="btn btn-primary" href="/admin/com_menu/menus/new">{{ ct('com_menu.admin.new_menu') }}</a>
   <a class="btn btn-outline-primary" href="/admin/com_menu/items/new">{{ ct('com_menu.admin.new_item') }}</a>
 </div>
@@ -21,7 +21,8 @@
       <div class="card-header fw-semibold">{{ ct('com_menu.admin.menus') }}</div>
       <div class="table-responsive">
         <table class="table align-middle mb-0">
-          <thead><tr><th>{{ ct('com_menu.admin.col.title') }}</th><th>{{ ct('com_menu.admin.col.alias') }}</th><th></th></tr></thead>
+          <caption class="visually-hidden">{{ ct('com_menu.admin.menus') }}</caption>
+          <thead><tr><th scope="col">{{ ct('com_menu.admin.col.title') }}</th><th scope="col">{{ ct('com_menu.admin.col.alias') }}</th><th scope="col" class="text-end">{{ ct('com_menu.admin.col.actions') }}</th></tr></thead>
           <tbody>
           {% for menu in menus %}
           <tr>
@@ -29,7 +30,8 @@
             <td><code>{{ menu.alias }}</code></td>
             <td class="text-end">
               <a class="btn btn-sm btn-outline-primary" href="/admin/com_menu/menus/{{ menu.id }}/edit">{{ t('toolbar.edit') }}</a>
-              <form method="post" action="/admin/com_menu/menus/{{ menu.id }}/delete" class="d-inline">
+              <form method="post" action="/admin/com_menu/menus/{{ menu.id }}/delete" class="d-inline"
+                    onsubmit="return confirm('{{ t('toolbar.delete') }}: {{ menu.title }}?')">
                 <button class="btn btn-sm btn-outline-danger" type="submit">{{ t('toolbar.delete') }}</button>
               </form>
             </td>
@@ -47,7 +49,8 @@
       <div class="card-header fw-semibold">{{ ct('com_menu.admin.items') }}</div>
       <div class="table-responsive">
         <table class="table align-middle mb-0">
-          <thead><tr><th>{{ ct('com_menu.admin.col.title') }}</th><th>{{ ct('com_menu.admin.col.url') }}</th><th>{{ ct('com_menu.admin.col.status') }}</th><th></th></tr></thead>
+          <caption class="visually-hidden">{{ ct('com_menu.admin.items') }}</caption>
+          <thead><tr><th scope="col">{{ ct('com_menu.admin.col.title') }}</th><th scope="col">{{ ct('com_menu.admin.col.url') }}</th><th scope="col">{{ ct('com_menu.admin.col.status') }}</th><th scope="col" class="text-end">{{ ct('com_menu.admin.col.actions') }}</th></tr></thead>
           <tbody>
           {% for item in items %}
           <tr>
@@ -56,7 +59,8 @@
             <td>{{ ct('com_menu.status.' ~ item.status) }}</td>
             <td class="text-end">
               <a class="btn btn-sm btn-outline-primary" href="/admin/com_menu/items/{{ item.id }}/edit">{{ t('toolbar.edit') }}</a>
-              <form method="post" action="/admin/com_menu/items/{{ item.id }}/delete" class="d-inline">
+              <form method="post" action="/admin/com_menu/items/{{ item.id }}/delete" class="d-inline"
+                    onsubmit="return confirm('{{ t('toolbar.delete') }}: {{ item.title }}?')">
                 <button class="btn btn-sm btn-outline-danger" type="submit">{{ t('toolbar.delete') }}</button>
               </form>
             </td>
