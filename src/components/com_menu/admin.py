@@ -100,7 +100,7 @@ async def menu_edit_form(
     request: Request,
     user: CurrentAdminUser,
     db: AsyncSession = Depends(get_db_session),
-) -> HTMLResponse | Response:
+) -> Response:
     menu = await get_menu(db, menu_id)
     if menu is None:
         return RedirectResponse("/admin/com_menu", status_code=303)
@@ -194,7 +194,7 @@ async def item_edit_form(
     request: Request,
     user: CurrentAdminUser,
     db: AsyncSession = Depends(get_db_session),
-) -> HTMLResponse | Response:
+) -> Response:
     item = await get_item(db, item_id)
     if item is None:
         return RedirectResponse("/admin/com_menu", status_code=303)

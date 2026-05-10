@@ -4,7 +4,7 @@
   "type": "component",
   "vendor": "klucon",
   "extension_id": "klucon/com_menu",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "display_name": "Menu",
   "display_name_key": "extensions.name.com_menu",
   "description": "Sprava menu a navigacnich polozek pro frontend sablony.",
@@ -79,7 +79,7 @@
     "cs_CZ",
     "en_GB"
   ],
-  "changelog": "Menu manager has working admin pages for menus and menu items.",
+  "changelog": "Oprava FastAPI route anotaci pro kompatibilitu s aktualni verzi frameworku.",
   "routes": {
     "admin": {
       "enabled": true,
