@@ -33,3 +33,11 @@ def setup(reg: "ComponentRegistry") -> None:
     reg.register_router(admin.router)
 
     translator.load_domain("com_menu", _COMPONENT_DIR / "i18n")
+
+
+async def uninstall_schema(engine: object) -> None:
+    from src.components.com_menu.models import Menu, MenuItem
+
+    async with engine.begin() as conn:
+        await conn.run_sync(lambda sync_conn: MenuItem.__table__.drop(sync_conn, checkfirst=True))
+        await conn.run_sync(lambda sync_conn: Menu.__table__.drop(sync_conn, checkfirst=True))

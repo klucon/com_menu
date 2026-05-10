@@ -4,7 +4,7 @@
   "type": "component",
   "vendor": "klucon",
   "extension_id": "klucon/com_menu",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "display_name": "Menu",
   "display_name_key": "extensions.name.com_menu",
   "description": "Správa menu a navigačních položek pro frontend šablony.",
@@ -79,7 +79,7 @@
     "cs_CZ",
     "en_GB"
   ],
-  "changelog": "Oprava českých překladů a textů v manifestu včetně diakritiky.",
+  "changelog": "Přidán uninstall hook pro bezpečné odstranění tabulek menu při odinstalaci.",
   "routes": {
     "admin": {
       "enabled": true,
