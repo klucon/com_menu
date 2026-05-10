@@ -4,7 +4,7 @@
   "type": "component",
   "vendor": "klucon",
   "extension_id": "klucon/com_menu",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "display_name": "Menu",
   "display_name_key": "extensions.name.com_menu",
   "description": "Správa menu a navigačních položek pro frontend šablony.",
@@ -70,6 +70,16 @@
       "frontend"
     ],
     "featured": false
+  },
+  "dashboard": {
+    "quick_icon": {
+      "enabled": true,
+      "label": "Menu",
+      "description": "Správa menu a navigačních položek.",
+      "icon": "list",
+      "url": "/admin/com_menu",
+      "order": 140
+    }
   },
   "min_cms_version": "0.1.0",
   "categories": [
