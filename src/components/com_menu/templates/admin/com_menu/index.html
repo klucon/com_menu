@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}{{ ct('com_menu.admin.heading') }}{% endblock %}
+{% block heading %}{{ ct('com_menu.admin.heading') }}{% endblock %}
+
+{% block content %}
+{% if flash %}
+<div class="alert alert-{{ flash.type }} alert-dismissible mb-4" role="alert">
+  {{ flash.text }}
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ t('alert.close') }}"></button>
+</div>
+{% endif %}
+
+<div class="d-flex gap-2 mb-3">
+  <a class="btn btn-primary" href="/admin/com_menu/menus/new">{{ ct('com_menu.admin.new_menu') }}</a>
+  <a class="btn btn-outline-primary" href="/admin/com_menu/items/new">{{ ct('com_menu.admin.new_item') }}</a>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-5">
+    <div class="card h-100">
+      <div class="card-header fw-semibold">{{ ct('com_menu.admin.menus') }}</div>
+      <div class="table-responsive">
+        <table class="table align-middle mb-0">
+          <thead><tr><th>{{ ct('com_menu.admin.col.title') }}</th><th>{{ ct('com_menu.admin.col.alias') }}</th><th></th></tr></thead>
+          <tbody>
+          {% for menu in menus %}
+          <tr>
+            <td>{{ menu.title }}</td>
+            <td><code>{{ menu.alias }}</code></td>
+            <td class="text-end">
+              <a class="btn btn-sm btn-outline-primary" href="/admin/com_menu/menus/{{ menu.id }}/edit">{{ t('toolbar.edit') }}</a>
+              <form method="post" action="/admin/com_menu/menus/{{ menu.id }}/delete" class="d-inline">
+                <button class="btn btn-sm btn-outline-danger" type="submit">{{ t('toolbar.delete') }}</button>
+              </form>
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="3" class="text-body-secondary">{{ ct('com_menu.admin.empty_menus') }}</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-7">
+    <div class="card h-100">
+      <div class="card-header fw-semibold">{{ ct('com_menu.admin.items') }}</div>
+      <div class="table-responsive">
+        <table class="table align-middle mb-0">
+          <thead><tr><th>{{ ct('com_menu.admin.col.title') }}</th><th>{{ ct('com_menu.admin.col.url') }}</th><th>{{ ct('com_menu.admin.col.status') }}</th><th></th></tr></thead>
+          <tbody>
+          {% for item in items %}
+          <tr>
+            <td>{{ item.title }}</td>
+            <td><code>{{ item.url }}</code></td>
+            <td>{{ ct('com_menu.status.' ~ item.status) }}</td>
+            <td class="text-end">
+              <a class="btn btn-sm btn-outline-primary" href="/admin/com_menu/items/{{ item.id }}/edit">{{ t('toolbar.edit') }}</a>
+              <form method="post" action="/admin/com_menu/items/{{ item.id }}/delete" class="d-inline">
+                <button class="btn btn-sm btn-outline-danger" type="submit">{{ t('toolbar.delete') }}</button>
+              </form>
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="4" class="text-body-secondary">{{ ct('com_menu.admin.empty_items') }}</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
