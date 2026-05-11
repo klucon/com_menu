@@ -31,6 +31,7 @@
             <label for="menu-item-url" class="form-label fw-medium">{{ ct('com_menu.admin.col.url') }}</label>
             <input id="menu-item-url" class="form-control font-monospace" name="url" value="{{ item.url if item else '/' }}" required>
           </div>
+          {{ url_helper_slot | default('') | safe }}
         </div>
       </div>
     </div>

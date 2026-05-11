@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.api.admin.deps import CurrentAdminUser
 from src.api.admin.render import admin_render
+from src.core.hooks import hooks
 from src.core.system_settings import get_runtime_settings
 from src.core.templates import make_t
 from src.database.base import get_db_session
@@ -36,6 +37,11 @@ async def _component_t(db: AsyncSession):
 
 def _set_flash(request: Request, flash_type: str, text: str) -> None:
     request.session["flash"] = {"type": flash_type, "text": text}
+
+
+async def _url_helper_slot(item: object, request: Request, db: AsyncSession) -> str:
+    results = await hooks.fire("menu.item.form.url_helper", item=item, request=request, db=db)
+    return "\n".join(str(r) for r in results if r)
 
 
 @router.get("", response_class=HTMLResponse)
@@ -167,6 +173,7 @@ async def item_new_form(
         ct=await _component_t(db),
         item=None,
         menus=await list_menus(db),
+        url_helper_slot=await _url_helper_slot(None, request, db),
         flash=request.session.pop("flash", None),
     )
 
@@ -206,6 +213,7 @@ async def item_edit_form(
         ct=await _component_t(db),
         item=item,
         menus=await list_menus(db),
+        url_helper_slot=await _url_helper_slot(item, request, db),
         flash=request.session.pop("flash", None),
     )
 
