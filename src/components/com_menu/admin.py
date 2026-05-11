@@ -39,9 +39,92 @@ def _set_flash(request: Request, flash_type: str, text: str) -> None:
     request.session["flash"] = {"type": flash_type, "text": text}
 
 
-async def _url_helper_slot(item: object, request: Request, db: AsyncSession) -> str:
-    results = await hooks.fire("menu.item.form.url_helper", item=item, request=request, db=db)
-    return "\n".join(str(r) for r in results if r)
+def _normalize_type(raw: object) -> str:
+    return str(raw or "").strip()
+
+
+async def _menu_item_types(request: Request, db: AsyncSession) -> list[dict[str, object]]:
+    ct = await _component_t(db)
+    results = await hooks.fire("menu.item.types", request=request, db=db)
+    types: list[dict[str, object]] = []
+    for result in results:
+        if isinstance(result, list):
+            types.extend(item for item in result if isinstance(item, dict))
+        elif isinstance(result, dict):
+            types.append(result)
+    types.append(
+        {
+            "key": "system.url",
+            "group": ct("com_menu.type.group.system"),
+            "label": ct("com_menu.type.url"),
+            "description": ct("com_menu.type.url_description"),
+            "empty": "",
+            "options": [],
+            "manual_url": True,
+        }
+    )
+    return sorted(types, key=lambda item: str(item.get("group", "")) + str(item.get("label", "")))
+
+
+def _find_type(types: list[dict[str, object]], key: str) -> dict[str, object] | None:
+    for item_type in types:
+        if item_type.get("key") == key:
+            return item_type
+    return None
+
+
+def _find_option(item_type: dict[str, object] | None, value: str) -> dict[str, object] | None:
+    if item_type is None:
+        return None
+    options = item_type.get("options")
+    if not isinstance(options, list):
+        return None
+    for option in options:
+        if isinstance(option, dict) and str(option.get("value", "")) == value:
+            return option
+    return None
+
+
+def _infer_type_from_url(
+    types: list[dict[str, object]],
+    url: str,
+) -> tuple[str, str]:
+    for item_type in types:
+        options = item_type.get("options")
+        if not isinstance(options, list):
+            continue
+        for option in options:
+            if isinstance(option, dict) and option.get("url") == url:
+                return str(item_type.get("key") or "system.url"), str(option.get("value") or "")
+    return "system.url", ""
+
+
+async def _item_payload(form: object, request: Request, db: AsyncSession):
+    item_types = await _menu_item_types(request, db)
+    item_type_key = _normalize_type(form.get("item_type")) or "system.url"
+    item_type = _find_type(item_types, item_type_key)
+    selected_value = str(form.get("item_ref", "") or "")
+    selected_option = _find_option(item_type, selected_value)
+
+    raw_title = str(form.get("title", "") or "").strip()
+    if item_type and item_type.get("manual_url") is True:
+        title = raw_title
+        url = str(form.get("url", "") or "").strip()
+    elif selected_option is not None:
+        title = raw_title or str(selected_option.get("title") or "")
+        url = str(selected_option.get("url") or "").strip()
+    else:
+        title = raw_title
+        url = ""
+
+    return build_item_payload(
+        menu_id=form.get("menu_id"),
+        title=title,
+        url=url,
+        target=str(form.get("target", "_self")),
+        status=str(form.get("status", "published")),
+        ordering=form.get("ordering"),
+    )
 
 
 @router.get("", response_class=HTMLResponse)
@@ -165,6 +248,19 @@ async def item_new_form(
     user: CurrentAdminUser,
     db: AsyncSession = Depends(get_db_session),
 ) -> HTMLResponse:
+    item_types = await _menu_item_types(request, db)
+    selected_type = _normalize_type(request.query_params.get("item_type"))
+    if not selected_type:
+        return await admin_render(
+            "admin/com_menu/item_type.html",
+            request=request,
+            db=db,
+            user=user,
+            ct=await _component_t(db),
+            item_types=item_types,
+            flash=request.session.pop("flash", None),
+        )
+    selected_item_type = _find_type(item_types, selected_type) or _find_type(item_types, "system.url")
     return await admin_render(
         "admin/com_menu/item_form.html",
         request=request,
@@ -173,7 +269,10 @@ async def item_new_form(
         ct=await _component_t(db),
         item=None,
         menus=await list_menus(db),
-        url_helper_slot=await _url_helper_slot(None, request, db),
+        item_types=item_types,
+        selected_type=selected_item_type,
+        selected_type_key=selected_item_type.get("key") if selected_item_type else "system.url",
+        selected_ref="",
         flash=request.session.pop("flash", None),
     )
 
@@ -187,7 +286,7 @@ async def item_new_submit(
     ct = await _component_t(db)
     form = await request.form()
     try:
-        item = await create_item(db, _item_payload(form))
+        item = await create_item(db, await _item_payload(form, request, db))
     except MenuError as exc:
         _set_flash(request, "danger", ct(exc.key, **exc.kwargs))
         return RedirectResponse("/admin/com_menu/items/new", status_code=303)
@@ -205,6 +304,14 @@ async def item_edit_form(
     item = await get_item(db, item_id)
     if item is None:
         return RedirectResponse("/admin/com_menu", status_code=303)
+    item_types = await _menu_item_types(request, db)
+    selected_type_key = _normalize_type(request.query_params.get("item_type"))
+    selected_ref = ""
+    if not selected_type_key:
+        selected_type_key, selected_ref = _infer_type_from_url(item_types, item.url)
+    selected_item_type = _find_type(item_types, selected_type_key) or _find_type(item_types, "system.url")
+    if selected_item_type and not selected_ref:
+        selected_ref = _infer_type_from_url([selected_item_type], item.url)[1]
     return await admin_render(
         "admin/com_menu/item_form.html",
         request=request,
@@ -213,7 +320,10 @@ async def item_edit_form(
         ct=await _component_t(db),
         item=item,
         menus=await list_menus(db),
-        url_helper_slot=await _url_helper_slot(item, request, db),
+        item_types=item_types,
+        selected_type=selected_item_type,
+        selected_type_key=selected_item_type.get("key") if selected_item_type else "system.url",
+        selected_ref=selected_ref,
         flash=request.session.pop("flash", None),
     )
 
@@ -231,7 +341,7 @@ async def item_edit_submit(
     ct = await _component_t(db)
     form = await request.form()
     try:
-        await update_item(db, item, _item_payload(form))
+        await update_item(db, item, await _item_payload(form, request, db))
     except MenuError as exc:
         _set_flash(request, "danger", ct(exc.key, **exc.kwargs))
         return RedirectResponse(f"/admin/com_menu/items/{item_id}/edit", status_code=303)
@@ -250,14 +360,3 @@ async def item_delete_submit(
     ct = await _component_t(db)
     _set_flash(request, "success", ct("com_menu.success.item_deleted"))
     return RedirectResponse("/admin/com_menu", status_code=303)
-
-
-def _item_payload(form: object):
-    return build_item_payload(
-        menu_id=form.get("menu_id"),
-        title=str(form.get("title", "")),
-        url=str(form.get("url", "")),
-        target=str(form.get("target", "_self")),
-        status=str(form.get("status", "published")),
-        ordering=form.get("ordering"),
-    )

@@ -7,6 +7,10 @@
 <div class="cms-toolbar" role="toolbar" aria-label="{% if item %}{{ ct('com_menu.admin.edit_item') }}{% else %}{{ ct('com_menu.admin.new_item') }}{% endif %}">
   {{ btn_save(t, 'cms-menu-item-form') }}
   {{ separator() }}
+  {% if not item %}
+  <a class="btn btn-outline-secondary" href="/admin/com_menu/items/new">{{ ct('com_menu.admin.change_type') }}</a>
+  {{ separator() }}
+  {% endif %}
   {{ btn_cancel(t, '/admin/com_menu') }}
 </div>
 {% endblock %}
@@ -19,19 +23,54 @@
 </div>
 {% endif %}
 <form id="cms-menu-item-form" method="post" action="{% if item %}/admin/com_menu/items/{{ item.id }}/edit{% else %}/admin/com_menu/items/new{% endif %}">
+  <input type="hidden" name="item_type" value="{{ selected_type_key }}">
   <div class="row">
     <div class="col-lg-8">
-      <div class="card">
+      <div class="card mb-4">
+        <div class="card-header fw-semibold">{{ ct('com_menu.admin.item_type') }}</div>
         <div class="card-body">
-          <div class="mb-3">
-            <label for="menu-item-title" class="form-label fw-medium">{{ ct('com_menu.admin.col.title') }}</label>
-            <input id="menu-item-title" class="form-control" name="title" value="{{ item.title if item else '' }}" required>
+          {% if selected_type %}
+          <div class="mb-2">
+            <div class="small text-body-secondary">{{ selected_type.group }}</div>
+            <div class="h5 mb-1">{{ selected_type.label }}</div>
+            {% if selected_type.description %}
+            <div class="text-body-secondary">{{ selected_type.description }}</div>
+            {% endif %}
           </div>
+          {% endif %}
+
+          {% if selected_type and selected_type.manual_url %}
           <div>
             <label for="menu-item-url" class="form-label fw-medium">{{ ct('com_menu.admin.col.url') }}</label>
             <input id="menu-item-url" class="form-control font-monospace" name="url" value="{{ item.url if item else '/' }}" required>
           </div>
-          {{ url_helper_slot | default('') | safe }}
+          {% else %}
+          <label for="menu-item-ref" class="form-label fw-medium">{{ ct('com_menu.admin.select_item') }}</label>
+          <select id="menu-item-ref" class="form-select" name="item_ref" required>
+            <option value="">{{ selected_type.empty if selected_type and selected_type.empty else ct('com_menu.admin.select_item_empty') }}</option>
+            {% if selected_type and selected_type.options %}
+              {% for option in selected_type.options %}
+              <option value="{{ option.value }}" {% if selected_ref == option.value %}selected{% endif %}>
+                {{ option.title }}
+              </option>
+              {% endfor %}
+            {% endif %}
+          </select>
+          {% if selected_type and selected_type.options|length == 0 %}
+          <div class="form-text text-danger">{{ ct('com_menu.admin.no_type_items') }}</div>
+          {% endif %}
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header fw-semibold">{{ ct('com_menu.admin.item_details') }}</div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label for="menu-item-title" class="form-label fw-medium">{{ ct('com_menu.admin.col.title') }}</label>
+            <input id="menu-item-title" class="form-control" name="title" value="{{ item.title if item else '' }}"
+                   placeholder="{{ ct('com_menu.admin.title_auto_hint') }}">
+          </div>
         </div>
       </div>
     </div>

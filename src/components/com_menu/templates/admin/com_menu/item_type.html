@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% from "_toolbar.html" import btn_cancel %}
+{% block title %}{{ ct('com_menu.admin.choose_type') }}{% endblock %}
+{% block heading %}{{ ct('com_menu.admin.choose_type') }}{% endblock %}
+
+{% block toolbar %}
+<div class="cms-toolbar" role="toolbar" aria-label="{{ ct('com_menu.admin.choose_type') }}">
+  {{ btn_cancel(t, '/admin/com_menu') }}
+</div>
+{% endblock %}
+
+{% block content %}
+{% if flash %}
+<div class="alert alert-{{ flash.type }} alert-dismissible mb-4" role="alert">
+  {{ flash.text }}
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ t('alert.close') }}"></button>
+</div>
+{% endif %}
+
+<div class="row g-3">
+  {% for item_type in item_types %}
+  <div class="col-md-6 col-xl-4">
+    <a class="card h-100 text-decoration-none text-body"
+       href="/admin/com_menu/items/new?item_type={{ item_type.key }}">
+      <div class="card-body">
+        <div class="small text-body-secondary mb-1">{{ item_type.group }}</div>
+        <h2 class="h5 mb-2">{{ item_type.label }}</h2>
+        {% if item_type.description %}
+        <p class="mb-0 text-body-secondary">{{ item_type.description }}</p>
+        {% endif %}
+      </div>
+    </a>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
