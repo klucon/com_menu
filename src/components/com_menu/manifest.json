@@ -4,7 +4,7 @@
   "type": "component",
   "vendor": "klucon",
   "extension_id": "klucon/com_menu",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "display_name": "Menu",
   "display_name_key": "extensions.name.com_menu",
   "description": "Správa menu a navigačních položek pro frontend šablony.",
@@ -89,7 +89,7 @@
     "cs_CZ",
     "en_GB"
   ],
-  "changelog": "Přidán hook menu.item.form.url_helper – komponenty mohou injektovat výběr URL do formuláře položky.",
+  "changelog": "Odstraněny inline potvrzovací handlery z administrace kvůli CSP.",
   "routes": {
     "admin": {
       "enabled": true,

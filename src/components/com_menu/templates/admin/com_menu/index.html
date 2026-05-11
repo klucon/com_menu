@@ -31,7 +31,7 @@
             <td class="text-end">
               <a class="btn btn-sm btn-outline-primary" href="/admin/com_menu/menus/{{ menu.id }}/edit">{{ t('toolbar.edit') }}</a>
               <form method="post" action="/admin/com_menu/menus/{{ menu.id }}/delete" class="d-inline"
-                    onsubmit="return confirm('{{ t('toolbar.delete') }}: {{ menu.title }}?')">
+                    data-cms-confirm="{{ t('toolbar.delete') }}: {{ menu.title }}?">
                 <button class="btn btn-sm btn-outline-danger" type="submit">{{ t('toolbar.delete') }}</button>
               </form>
             </td>
@@ -60,7 +60,7 @@
             <td class="text-end">
               <a class="btn btn-sm btn-outline-primary" href="/admin/com_menu/items/{{ item.id }}/edit">{{ t('toolbar.edit') }}</a>
               <form method="post" action="/admin/com_menu/items/{{ item.id }}/delete" class="d-inline"
-                    onsubmit="return confirm('{{ t('toolbar.delete') }}: {{ item.title }}?')">
+                    data-cms-confirm="{{ t('toolbar.delete') }}: {{ item.title }}?">
                 <button class="btn btn-sm btn-outline-danger" type="submit">{{ t('toolbar.delete') }}</button>
               </form>
             </td>
